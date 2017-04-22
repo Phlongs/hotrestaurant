@@ -6,6 +6,7 @@ var path = require("path");
 
 var app = express();
 var PORT = 3000;
+var tables = [];
 //Sets up the Express app to handle data parsing
 //Sets up the Express app to handle data parsing
 app.use(bodyParser.json());
@@ -25,10 +26,37 @@ app.get("/reserve", function(req, res) {
   res.sendFile(path.join(__dirname, "reserve.html"));
 });
 
+
+app.get("/api/:tables?", function(req, res) {
+  var chosen = req.params.tables;
+
+  if (chosen) {
+    console.log(chosen);
+
+    for (var i = 0; i < tables.length; i++) {
+      if (chosen === tables[i]) {
+       return res.json(tables[i]);
+      }
+    }
+    return res.json(tables);
+  }
+  return res.json(false);
+});
+
+//Create New table- takes in JSON input
+app.post("/api/tables", function(req, res) {
+  var newtable = req.body;
+
+  console.log(newtable);
+
+  tables.push(newtable);
+
+  res.json(newtable);
+});
+
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT);
 });
-
 // var connection = mysql.createConnection({
 //   host: "localhost",
 //   port: 3000,
